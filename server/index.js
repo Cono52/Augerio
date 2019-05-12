@@ -1,4 +1,6 @@
+require("dotenv").config();
 const express = require("express");
+const morgan = require("morgan");
 const app = express();
 const multer = require("multer");
 const bodyParser = require("body-parser");
@@ -15,8 +17,8 @@ app.use(function(req, res, next) {
   );
   next();
 });
-
 app.use(bodyParser.json());
+app.use(morgan("combined"));
 
 app.get("/", (req, res) => res.send("Hello World!"));
 

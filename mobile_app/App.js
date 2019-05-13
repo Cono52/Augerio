@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { StyleSheet, View, Image } from "react-native";
 import { Button } from "react-native-elements";
 import ImagePicker from "react-native-image-picker";
+import ImageResizer from "react-native-image-resizer";
 
 import createFormData from "./createFormData";
 
@@ -47,19 +48,31 @@ export default class App extends Component {
   };
 
   handleUploadPhoto = () => {
-    fetch("http://192.168.1.105:3001/api/upload", {
-      method: "POST",
-      body: createFormData(this.state.photo, { userId: "123" })
-    })
-      .then(response => response.json())
+    ImageResizer.createResizedImage(
+      this.state.photo.uri,
+      1280,
+      1280,
+      "JPEG",
+      80
+    )
       .then(response => {
-        console.log("upload succes", response);
-        alert("Upload success!");
-        this.setState({ photo: null });
+        fetch("http://192.168.1.105:3001/api/upload", {
+          method: "POST",
+          body: createFormData(response, { userId: "123" })
+        })
+          .then(response => response.json())
+          .then(response => {
+            console.log("upload succes", response);
+            alert("Upload success!");
+            this.setState({ photo: null });
+          })
+          .catch(error => {
+            console.log("upload error", error);
+            alert("Upload failed!");
+          });
       })
-      .catch(error => {
-        console.log("upload error", error);
-        alert("Upload failed!");
+      .catch(err => {
+        console.log(err);
       });
   };
 

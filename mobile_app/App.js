@@ -79,37 +79,18 @@ export default class App extends Component {
   render() {
     const { photo } = this.state;
     return (
-      <>
-        <View
-          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-        >
-          {photo && (
-            <>
-              <Image
-                source={{ uri: photo.uri }}
-                style={{ width: 300, height: 300 }}
-              />
-              <Button title="Upload" onPress={this.handleUploadPhoto} />
-            </>
-          )}
-          <Button title="Choose Photo" onPress={this.handleChoosePhoto} />
-        </View>
-        {/* <View style={styles.container}>
-          <Text style={styles.instructions}>
-            Try take a decent pie of the patient...
-          </Text>
-          <Button
-            raised
-            icon={{
-              name: "camera-retro",
-              type: "font-awesome",
-              color: "white",
-              size: 30
-            }}
-            buttonStyle={styles.button}
-          />
-        </View> */}
-      </>
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        {photo && (
+          <>
+            <Image
+              source={{ uri: photo.uri }}
+              style={{ width: 300, height: 300 }}
+            />
+            <Button title="Upload" onPress={this.handleUploadPhoto} />
+          </>
+        )}
+        <Button title="Choose Photo" onPress={this.handleChoosePhoto} />
+      </View>
     );
   }
 }

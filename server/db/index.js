@@ -25,6 +25,8 @@ const getPosts = async () => {
   }
 };
 
+const addUserOp = ``;
+
 module.exports = {
   getPosts
 };

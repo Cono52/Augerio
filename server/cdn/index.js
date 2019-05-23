@@ -1,4 +1,8 @@
+const routes = require("express").Router();
 const cloudinary = require("cloudinary").v2;
+const Datauri = require("datauri");
+const path = require("path");
+const multer = require("multer");
 
 function uploadImage(file) {
   return cloudinary.uploader.upload(file, (error, result) =>
@@ -6,6 +10,33 @@ function uploadImage(file) {
   );
 }
 
+// Warning: loading to many images into memoery can crash app
+const Storage = multer.memoryStorage();
+
+const upload = multer({ storage: Storage });
+const dUri = new Datauri();
+
+const dataUri = req =>
+  dUri.format(path.extname(req.file.originalname).toString(), req.file.buffer);
+
+routes.post("/upload", upload.single("photo"), (req, res) => {
+  const file = dataUri(req).content;
+  uploadImage(file)
+    .then(result => {
+      // Store this URL along with the user and info to Postgres
+      const imageURL = result.secure_url;
+    })
+    .catch(err => {
+      res.status(400).json({
+        message: "Something went wrong uplading to CDN"
+      });
+    });
+  console.log("body", req.body);
+  res.status(200).json({
+    message: "success!"
+  });
+});
+
 module.exports = {
-  uploadImage
+  routes
 };

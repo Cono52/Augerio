@@ -16,14 +16,14 @@ const Storage = multer.memoryStorage();
 const upload = multer({ storage: Storage });
 const dUri = new Datauri();
 
-const dataUri = req =>
-  dUri.format(path.extname(req.file.originalname).toString(), req.file.buffer);
+const dataUri = file =>
+  dUri.format(path.extname(file.originalname).toString(), file.buffer);
 
 routes.post("/upload", upload.single("photo"), (req, res) => {
-  const file = dataUri(req).content;
+  const file = dataUri(req.file).content;
   uploadImage(file)
     .then(result => {
-      // Store this URL along with the user and info to Postgres
+      // TODO: Store this URL along with the user and info to Postgres
       const imageURL = result.secure_url;
     })
     .catch(err => {

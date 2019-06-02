@@ -21,26 +21,44 @@ class Home extends Component {
     super(props);
     this.state = {
       fetchingFakeData: false,
-      fakeData: []
+      fakeData: [],
+      error: null
     };
   }
 
-  async componentDidMount() {
-    const fakeData = await fetch("http://localhost:3001/data").then(response =>
-      response.json()
-    );
-    this.setState({ fakeData });
+  componentDidMount() {
+    fetch("http://localhost:3001/getallposts")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        this.setState({ fakeData: response.json() });
+      })
+      .catch(error => {
+        console.log(error);
+        this.setState({ error });
+      });
   }
 
   render() {
+    const { fakeData, fetchingFakeData, error } = this.state;
+
+    if (fetchingFakeData) {
+      return <div>Loading</div>;
+    }
+
+    if (error) {
+      return <div>{`Something went wrong... ${error}`}</div>;
+    }
+
     return (
       <Wrapper>
         <Header />
         <Search />
         <Main>
-          {this.state.fakeData.length === 0 && !this.state.fetchingFakeData
-            ? "loading"
-            : this.state.fakeData.map((postObject, i) => (
+          {fakeData.length === 0 && !fetchingFakeData
+            ? "Empty"
+            : fakeData.map((postObject, i) => (
                 <Post key={i + "button"} postObject={postObject} />
               ))}
         </Main>

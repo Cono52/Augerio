@@ -27,28 +27,43 @@ class Home extends Component {
   }
 
   componentDidMount() {
-    fetch("http://localhost:3001/getallposts")
+    this.setState({ fetchingFakeData: true });
+    fetch("http://localhost:3001/getallposts", {
+      method: "GET",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+      }
+    })
       .then(response => {
         if (!response.ok) {
           throw new Error(response.statusText);
         }
-        this.setState({ fakeData: response.json() });
+        return response.json();
       })
+      .then(res => this.setState({ fakeData: res, fetchingFakeData: false }))
       .catch(error => {
         console.log(error);
-        this.setState({ error });
+        this.setState({ error, fetchingFakeData: false });
       });
   }
 
   render() {
     const { fakeData, fetchingFakeData, error } = this.state;
 
+    let contentToRender;
+
     if (fetchingFakeData) {
-      return <div>Loading</div>;
+      contentToRender = <div>Loading</div>;
     }
 
     if (error) {
-      return <div>{`Something went wrong... ${error}`}</div>;
+      contentToRender = <div>{`Something went wrong... ${error}`}</div>;
+    }
+
+    if (fakeData.length === 0 && !fetchingFakeData) {
+      contentToRender = "Empty";
     }
 
     return (
@@ -56,8 +71,8 @@ class Home extends Component {
         <Header />
         <Search />
         <Main>
-          {fakeData.length === 0 && !fetchingFakeData
-            ? "Empty"
+          {contentToRender
+            ? contentToRender
             : fakeData.map((postObject, i) => (
                 <Post key={i + "button"} postObject={postObject} />
               ))}

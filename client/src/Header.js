@@ -28,7 +28,10 @@ class Header extends Component {
       <Wrapper>
         <Logo>Content</Logo>
         <Icon
-          onClick={() => this.props.history.push("/")}
+          onClick={() => {
+            localStorage.removeItem("token");
+            this.props.history.push("/");
+          }}
           path={mdiLogin}
           size={1}
         />

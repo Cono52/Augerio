@@ -19,17 +19,16 @@ class Login extends Component {
 
   handleSubmit = e => {
     const { email, password } = this.state;
-    fetch("http://localhost:3001/user/login", {
+    fetch("http://127.0.0.1:3001/user/login", {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ email, password })
     })
-      .then(res => res.json())
-      .then(response => {
-        localStorage.setItem("token", response.token);
-        this.props.history.push("/home");
+      .then(res => {
+        if (res.status === 200) this.props.history.push("/home");
       })
       .catch(error => console.error("Error:", error));
   };

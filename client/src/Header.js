@@ -29,7 +29,9 @@ class Header extends Component {
         <Logo>Content</Logo>
         <Icon
           onClick={() => {
-            localStorage.removeItem("token");
+            fetch("http://127.0.0.1:3001/user/logout", {
+              credentials: "include"
+            });
             this.props.history.push("/");
           }}
           path={mdiLogin}

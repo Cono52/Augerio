@@ -33,18 +33,31 @@ routes.post("/login", async (req, res) => {
   const existingUser = await isUser(email);
 
   if (existingUser && (await bcrypt.compare(password, existingUser.password))) {
-    jwt.sign(
-      { email: existingUser.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "30m" },
-      (err, token) => {
-        res.json({ token });
-      }
-    );
+    console.log(req.session);
+    req.session.key = email;
+    res.json({ message: "login success" });
+    // jwt.sign(
+    //   { email: existingUser.email },
+    //   process.env.JWT_SECRET,
+    //   { expiresIn: "30m" },
+    //   (err, token) => {
+    //     res.json({ token });
+    //   }
+    // );
   } else {
     res.statusMessage = "Current email or password don't match";
     res.status(401).end();
   }
+});
+
+routes.get("/logout", (req, res) => {
+  req.session.destroy(function(err) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.sendStatus(200);
+    }
+  });
 });
 
 function verifyToken(req, res, next) {

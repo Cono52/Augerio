@@ -28,13 +28,11 @@ class Home extends Component {
 
   componentDidMount() {
     this.setState({ fetchingFakeData: true });
-    fetch("http://localhost:3001/getallposts", {
-      method: "GET",
-      credentials: "same-origin",
+    fetch("http://127.0.0.1:3001/getallposts", {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("token")}`
-      }
+        "Content-Type": "application/json"
+      },
+      credentials: "include"
     })
       .then(response => {
         if (!response.ok) {

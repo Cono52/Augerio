@@ -31,7 +31,7 @@ class ImageUploader extends Component {
     const { photo } = this.state;
     ImageResizer.createResizedImage(photo.uri, 1280, 1280, 'JPEG', 80)
       .then((resizedImage) => {
-        fetch('http://192.168.1.105:3001/api/upload', {
+        fetch('http://192.168.42.125:3001/user/upload', {
           method: 'POST',
           body: createFormData(resizedImage, { userId: '123' })
         })

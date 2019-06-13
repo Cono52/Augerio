@@ -1,42 +1,28 @@
-const routes = require("express").Router();
 const cloudinary = require("cloudinary").v2;
 const Datauri = require("datauri");
 const path = require("path");
-const multer = require("multer");
 
+const datauri = new Datauri();
+
+/**
+ * Converts a multer file object into a datauri i.e data:text/plain;base64,SGVsbG8sIFdvcmxkIQ%3D%3D
+ * and uploads it using the Cloudinary SDK.
+ * https://cloudinary.com/documentation/image_upload_api_reference
+ * @param {Express.Multer.File} file A multer file object
+ * @return {Promise<{secure_url: String}>} the url to access the uploaded image
+ */
 function uploadImage(file) {
-  return cloudinary.uploader.upload(file, (error, result) =>
-    console.log(result, error)
+  const dataUriResult = datauri.format(
+    path.extname(file.originalname).toString(),
+    file.buffer
   );
+
+  const dataUri = dataUriResult.content;
+  return cloudinary.uploader
+    .upload(dataUri, (error, result) => console.log(result, error))
+    .then(({ secure_url }) => secure_url);
 }
 
-// Warning: loading to many images into memoery can crash app
-const Storage = multer.memoryStorage();
-
-const upload = multer({ storage: Storage });
-const dUri = new Datauri();
-
-const dataUri = file =>
-  dUri.format(path.extname(file.originalname).toString(), file.buffer);
-
-routes.post("/upload", upload.single("photo"), (req, res) => {
-  const file = dataUri(req.file).content;
-  uploadImage(file)
-    .then(result => {
-      // TODO: Store this URL along with the user and info to Postgres
-      const imageURL = result.secure_url;
-    })
-    .catch(err => {
-      res.status(400).json({
-        message: "Something went wrong uplading to CDN"
-      });
-    });
-  console.log("body", req.body);
-  res.status(200).json({
-    message: "success!"
-  });
-});
-
 module.exports = {
-  routes
+  uploadImage
 };

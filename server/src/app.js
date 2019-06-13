@@ -4,9 +4,6 @@ const app = express();
 
 const { sessionMiddleware, checkCookie } = require("./services/sessions");
 
-const db = require("./services/db");
-const cdnRoutes = require("./services/cdn").routes;
-
 const userRoutes = require("./user").routes;
 const companyRoutes = require("./company").routes;
 
@@ -28,9 +25,11 @@ app.use(morgan("combined"));
 
 app.use("/user", userRoutes);
 app.use("/company", companyRoutes);
-app.use("/cdn", cdnRoutes);
 
 // Generic routes
+
+const db = require("./services/db");
+
 app.get("/getallposts", checkCookie, (req, res) => {
   db.getAllPosts()
     .then(posts => res.send(posts))

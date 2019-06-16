@@ -1,14 +1,19 @@
 const express = require("express");
-const morgan = require("morgan");
 const app = express();
-
+const morgan = require("morgan");
 const { sessionMiddleware, checkCookie } = require("./services/sessions");
-
 const userRoutes = require("./user").routes;
 const companyRoutes = require("./company").routes;
 
+// Internal Middlewares
+
 app.use(sessionMiddleware());
 
+// Middlewares
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(morgan("combined"));
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "http://127.0.0.1:3000");
   res.header("Access-Control-Allow-Credentials", true);
@@ -19,14 +24,12 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(morgan("combined"));
+// Routes
 
 app.use("/user", userRoutes);
 app.use("/company", companyRoutes);
 
-// Generic routes
+// Generic dev routes
 
 const db = require("./services/db");
 

@@ -2,6 +2,6 @@ import React from 'react';
 import ImageUploader from './ImageUploader';
 import Login from './Login';
 
-const App = () => <ImageUploader />;
+const App = () => <Login />;
 
 export default App;

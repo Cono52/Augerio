@@ -3,6 +3,9 @@ package com.contento;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+import com.oblador.keychain.KeychainPackage;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import fr.bamlab.rnimageresizer.ImageResizerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.imagepicker.ImagePickerPackage;
@@ -26,6 +29,9 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNGestureHandlerPackage(),
+            new KeychainPackage(),
+            new AsyncStoragePackage(),
             new ImageResizerPackage(),
             new VectorIconsPackage(),
             new ImagePickerPackage()

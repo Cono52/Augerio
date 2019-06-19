@@ -8,6 +8,8 @@ import {
   Text
 } from 'react-native';
 
+import { login } from './credentials-utilities';
+
 const styles = StyleSheet.create({
   container: {
     height: '100%',
@@ -57,6 +59,8 @@ const styles = StyleSheet.create({
 });
 
 class Login extends Component {
+  static navigationOptions = { header: null };
+
   constructor(props) {
     super(props);
     this.state = {
@@ -66,16 +70,25 @@ class Login extends Component {
   }
 
   handleEmailChange = (e) => {
-    this.setState({ email: e.target.value });
+    this.setState({ email: e.nativeEvent.text });
   };
 
   handlePasswordChange = (e) => {
-    this.setState({ password: e.target.value });
+    this.setState({ password: e.nativeEvent.text });
   };
 
-  submit = () => {
+  submit = async () => {
     const { email, password } = this.state;
-    console.log(email, password);
+    const { navigation } = this.props;
+
+    const result = await login(email, password);
+
+    if (result.err) {
+      console.log(result.err);
+      return;
+    }
+
+    navigation.navigate('Home');
   };
 
   render() {

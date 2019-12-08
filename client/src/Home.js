@@ -28,7 +28,7 @@ class Home extends Component {
 
   componentDidMount() {
     this.setState({ fetchingFakeData: true });
-    fetch("http://127.0.0.1:3001/getallposts", {
+    fetch("http://192.168.1.104:3001/getallposts", {
       headers: {
         "Content-Type": "application/json"
       },

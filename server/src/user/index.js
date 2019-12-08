@@ -10,6 +10,8 @@ const {
   deleteAuthorizedEmail
 } = require("../services/db");
 
+const { checkCookie } = require("../services/sessions");
+
 routes.post("/signup", async (req, res) => {
   const { email, password, companyName } = req.body;
 
@@ -32,9 +34,8 @@ routes.post("/signup", async (req, res) => {
 routes.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const existingUser = await isUser(email);
-
+  console.log(email, password);
   if (existingUser && (await bcrypt.compare(password, existingUser.password))) {
-    console.log(req.session);
     req.session.key = email;
     res.json({ message: "login success" });
     // jwt.sign(
@@ -46,8 +47,7 @@ routes.post("/login", async (req, res) => {
     //   }
     // );
   } else {
-    res.statusMessage = "Current email or password don't match";
-    res.status(401).end();
+    res.status(401).json({ error: "Email and/or password are incorrect." });
   }
 });
 
@@ -82,7 +82,7 @@ function verifyToken(req, res, next) {
 const Storage = multer.memoryStorage();
 const upload = multer({ storage: Storage });
 
-routes.post("/upload", upload.single("photo"), (req, res) => {
+routes.post("/upload", [checkCookie, upload.single("photo")], (req, res) => {
   uploadImage(req.file)
     .then(url => {
       // TODO: Store this URL along with the user and info to Postgres

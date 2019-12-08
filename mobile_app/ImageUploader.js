@@ -4,6 +4,7 @@ import ImageResizer from 'react-native-image-resizer';
 import ImagePicker from 'react-native-image-picker';
 import { View, Image } from 'react-native';
 import { Button } from 'react-native-elements';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import createFormData from './createFormData';
 
@@ -27,13 +28,17 @@ class ImageUploader extends Component {
     });
   };
 
-  handleUploadPhoto = () => {
+  handleUploadPhoto = async () => {
     const { photo } = this.state;
+    const cookie = await AsyncStorage.getItem('augerio-cookie');
     ImageResizer.createResizedImage(photo.uri, 1280, 1280, 'JPEG', 80)
       .then((resizedImage) => {
-        fetch('http://192.168.42.125:3001/user/upload', {
+        fetch('http://192.168.1.104:3001/user/upload', {
           method: 'POST',
-          body: createFormData(resizedImage, { userId: '123' })
+          body: createFormData(resizedImage, { userId: '123' }),
+          headers: {
+            cookie
+          }
         })
           .then(res => res.json())
           .then((res) => {

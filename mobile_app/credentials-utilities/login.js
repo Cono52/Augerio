@@ -9,7 +9,7 @@ async function login(email, password) {
    *  with the cookie we will manually manage and store in AsyncStorage */
   await clearReactNativeCookies();
 
-  const res = await fetch('http://192.168.42.125:3001/user/login', {
+  const res = await fetch('http://192.168.1.104:3001/user/login', {
     method: 'POST',
     credentials: 'include',
     headers: {
@@ -24,7 +24,7 @@ async function login(email, password) {
     return true;
   }
 
-  return { err: res };
+  return { error: await res.json().then(({ error }) => error) };
 }
 
 export default login;

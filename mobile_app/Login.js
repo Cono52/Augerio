@@ -65,7 +65,8 @@ class Login extends Component {
     super(props);
     this.state = {
       email: '',
-      password: ''
+      password: '',
+      error: null
     };
   }
 
@@ -81,10 +82,11 @@ class Login extends Component {
     const { email, password } = this.state;
     const { navigation } = this.props;
 
+    this.setState({ error: null });
     const result = await login(email, password);
 
-    if (result.err) {
-      console.log(result.err);
+    if (result.error) {
+      this.setState({ error: result.error });
       return;
     }
 
@@ -92,7 +94,7 @@ class Login extends Component {
   };
 
   render() {
-    const { email, password } = this.state;
+    const { email, password, error } = this.state;
     return (
       <View style={styles.container}>
         <KeyboardAvoidingView style={styles.loginForm} behavior="padding" enabled>
@@ -110,6 +112,7 @@ class Login extends Component {
             value={password}
             onChange={this.handlePasswordChange}
           />
+          {error ? <Text>{error}</Text> : null}
           <Text style={styles.forgotPassword}>Forgot password?</Text>
           <TouchableOpacity style={styles.button} onPress={this.submit}>
             <Text style={styles.buttonText}>Login</Text>

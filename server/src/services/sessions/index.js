@@ -37,6 +37,7 @@ function checkCookie(req, res, next) {
   if (req.session.key) {
     next();
   } else {
+    console.log("Error: Invalid or no cookie");
     res.sendStatus(401);
   }
 }

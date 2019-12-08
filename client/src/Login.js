@@ -19,7 +19,7 @@ class Login extends Component {
 
   handleSubmit = e => {
     const { email, password } = this.state;
-    fetch("http://127.0.0.1:3001/user/login", {
+    fetch("http://192.168.1.104:3001/user/login", {
       method: "POST",
       credentials: "include",
       headers: {
